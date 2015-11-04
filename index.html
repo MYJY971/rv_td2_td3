@@ -43,38 +43,38 @@
 
 <h3>2. Color tracking</h3>
 
-<p>La première technique de suivi que nous avons mis en œuvre consiste à déterminer la position d'un marqueur coloré (un post-it) dans une vidéo. Afin d'obtenir de meilleurs résultats, nous avons travaillé en espace HSV et donc effectué les conversions nécessaires et récupérer sur notre selection les 3 paramètres principaux d'une couleur HSV à savoir Hue, Saturation, Brightness:
-
-<div class="highlight">
-<pre><code class="cpp">void ofApp::update(){
-	[...]
-        hsvImg = img;
-        hsvImg.convertRgbToHsv();
-	[...]
-}
-</code></pre>
-<pre><code class="cpp">void ofApp::mousePressed(int x, int y, int button){
-    targetColor = img.getPixelsRef().getColor(x, y);
-    targetColorHsv=rgbToHsv(targetColor);
-    targetColorHsv.getHsb(hue,sat,bright);
-
-}
-</code></pre>
-</div>
-
-
+<p>La première technique de suivi que nous avons mis en œuvre consiste à déterminer la position d'un marqueur coloré (un post-it) dans une vidéo. Afin d'obtenir de meilleurs résultats, nous avons travaillé en espace HSV. Nous avons donc effectué les conversions nécessaires et récupéré sur notre selection les 3 paramètres principaux d'une couleur HSV à savoir Hue, Saturation, Brightness.
 </p>
 
-<p>Résultat (le rayon est représenté par la droite blanche) :</p>
+<p>
+Nous avons ensuite effectué un seuillage à l'aide de ses trois paramètres et d'une valeur de tolérance réglable avec les flèches haut et bas du clavier. Le résultat du seuillage a été mis dans dans une image en niveau de gris afin d'utiliser la méthode findContour(). Afin de limiter le bruit, nous utilisons les opérateurs morpho-mathématiques d'érosion et de dilatation. Après avoir recupérer le contour de notre postit, nous affichons sa boite englobante. 
+</p>
+
 <figure>
-	<img src="sire_td1-1.png" width="400" alt="1-1" />
-	
+	<img src="color_tracking.png" width="500" alt="image" />
+	<figcaption>Image Originale, image seuillée, image résultat</figcaption>
 </figure>
 
 
 <h3>3. Face tracking</h3>
 
-<p>//TODO </p>
+<p>Pour cette partie nous nous somme servie de l'algorithme de Viola et Jones, très utilisé pour la détection du visage. En gros, on parcourt l'image afin de retrouver un ensemble de caractéristique propre au visage humain. Cet algorithme étant très couteux, nous avons réduit la zone de recherche. Pour limité la zone de recherche (ROI) à un seul visage nous avons initialisé la variable ROI dans un premier temps à toute l’image occupé, puis l’avons affecté comme nouvelle valeur la boite englobante du premier visage détecté. Cependant en limitant la zone de recherche à la taille exact du visage détecté par l'algo, nous nuisont au bon fonctionnement de ce dernier car pour que celui fonctionne dans des conditions normales il faut que le visage soit bien à l'intérieur de la zone de recherche et non aux extrémités. 
+Pour contourné ce problème nous avons aggrandie le rectangle obtenue en multipliant sa taille de 1,5. Second problème qui se pose, c’est si le premier visage détecté est de petite taille (visage très eloigné de la caméra) alors on ne pourra pas détecté un visage en premier plan lorsque le visage du fond sera parti, pour résoudre cela nous réinitialisons la zone de recherche à tout l’écran lorsqu’aucun visage n’est détécté.
+ </p>
+Par la suite nous avons superposé une paire de lunettes et une barbe sur le visage en essayant de les positionner de façon logique (les yeux se trouve un peu plus haut du milieu du visage et la barbe se situe en bas )
+ </p>
+ <p>
+Voici le résultat obtenu
+<figure>
+
+		<img src="face_tracking1.png" width="400" alt="Color" />
+		<img src="face_tracking2.png" width="400" alt="Color" />
+		<figcaption>Un seul visage détécté à la fois</figcaption>
+</figure>	
+ </p>
+
+
+
 
 
 <h2>TD 3 - Immersion visuelle</h2>
